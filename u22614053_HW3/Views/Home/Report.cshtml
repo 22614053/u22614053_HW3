@@ -1,0 +1,131 @@
+﻿@{
+    ViewBag.Title = "Report";
+}
+
+<br />
+
+<h2 style="text-align:center; font-family:'Calisto MT'">Borrow History Report</h2>
+
+<br />
+
+<!--Chart Container-->
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center">
+            <div id="canvas">
+                <canvas id="chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="container">
+                <div class="row">
+                    <div class="col-6">
+                        <input id="fileName" class="form-control" placeholder="Enter Filename" />
+                        <br />
+                        <select id="fileType" class="form-control">
+                            <option style="font-family:'Calisto MT'" value="1">PDF</option>
+                            <!--Add Other Formats-->
+                        </select>
+                        <br />
+                        <button class="btn btn-outline-success" onclick="getPDF()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!--Script For Chart-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script>
+
+    $(document).ready(function () {
+        var chart = $('#chart');
+        var myChart = new Chart(chart,
+            {
+                type: 'bar',
+                data:
+                {
+                    labels: @Html.Raw(ViewBag.labels),
+                    datasets: [{
+                        label: 'Books borrowed',
+                        data: @Html.Raw(ViewBag.data),
+                        borderColor: @Html.Raw(ViewBag.borderColors),
+                        backgroundColor: @Html.Raw(ViewBag.backColors),
+                    }]
+                },
+                options: {
+                    title: {
+                        display: false,
+                        text: 'Borrow History ',
+                        poistion: 'bottom'
+                    },
+                    scales: {
+                        xAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Students'
+                            },
+                            barPercentage: 1,
+                            categoryPercentage: 1.1
+                        }],
+                        yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Books'
+                                },
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                    }
+                }
+            });
+    });
+
+
+    function getPDF()
+    {
+        // Get Values of Input and FileType
+
+        var fileName = $('#fileName').val();
+        var selectedFileType = $('#fileType').val();
+
+        // Check for null
+        if (fileName == "" || fileName == null) {
+            alert("Please Enter a Valid File Name");
+        }
+        else
+        {
+            if (selectedFileType == 1)
+            {
+                var canvas = document.querySelector('#chart');
+                var canvasImg = canvas.toDataURL("image/jpeg", 1.0);
+                var doc = new jsPDF('landscape');
+                doc.setFontSize(20);
+                doc.text(15, 15, "Cool Chart");
+                doc.addImage(canvasImg, 'JPEG', 10, 10, 280, 150);
+                doc.save(fileName + 'pdf');
+            }
+            // Check other formats as you wish
+        };
+    }
+
+
+    </script>
+}
+
+
+
+
+

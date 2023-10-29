@@ -1,0 +1,28 @@
+﻿@model List<u22614053_HW3.Models.ArchiveItem> 
+
+@{
+    ViewBag.Title = "Document Archive";
+}
+
+<h2>Document Archive</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Report Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ReportName</td>
+                <td>
+                    @Html.ActionLink("Download", "DownloadReport", new { filePath = item.FilePath, reportName = item.ReportName }) |
+                    @Html.ActionLink("Delete", "DeleteReport", new { filePath = item.FilePath })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

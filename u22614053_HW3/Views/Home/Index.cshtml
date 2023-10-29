@@ -1,0 +1,299 @@
+﻿@model u22614053_HW3.Models.LibraryVM
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<style>
+    .table-container {
+        display: flex;
+        flex-direction: column;
+        height: 90%;
+    }
+
+    .table {
+        flex-grow: -1;
+        overflow-y: auto;
+    }
+</style>
+
+<div class="container">
+    <div class="modal fade" id="createStudentModal" tabindex="-1" role="dialog" aria-labelledby="createStudentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createStudentModalLabel">Create New Student</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="createStudentForm">
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input type="text" class="form-control" id="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="surname">Surname:</label>
+                            <input type="text" class="form-control" id="surname">
+                        </div>
+                        <div class="form-group">
+                            <label for="birthdate">Birthdate:</label>
+                            <input type="date" class="form-control" id="birthdate">
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender:</label>
+                            <input type="text" class="form-control" id="gender">
+                        </div>
+                        <div class="form-group">
+                            <label for="point">Point:</label>
+                            <input type="number" class="form-control" id="point">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="createStudentModal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createStudentButton">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="createBookModal" tabindex="-1" role="dialog" aria-labelledby="createBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createBookModalLabel">Create New Book</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="false">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="createBookForm">
+                        <div class="form-group">
+                            <label for="title">Title:</label>
+                            <input type="text" class="form-control" id="title">
+                        </div>
+                        <div class="form-group">
+                            <label for="pagecount">Pagecount:</label>
+                            <input type="number" class="form-control" id="pagecount">
+                        </div>
+                        <div class="form-group">
+                            <label for="point">Point:</label>
+                            <input type="number" class="form-control" id="point">
+                        </div>
+                        <div class="form-group">
+                            <label for="author">Author:</label>
+                            <input type="text" class="form-control" id="author">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createBookButton">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="d-flex justify-content-between">
+            <div class="text-left">
+                <h3 class="text-left" style="font-family:'Curlz MT'">Students</h3>
+            </div>
+            <div class="text-right">
+                <button class="btn btn-outline-success open-create-student-modal">Create Student</button>
+            </div>
+        </div>
+
+        <br />
+        <div class="table-container">
+            <table class="table table-bordered student-table" style="background-color: #ececec; padding: 20px; border-radius: 5px; text-align: center">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Birthdate</th>
+                        <th>Gender</th>
+                        <th>Point</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in Model.Students)
+                    {
+                        <tr>
+                            <td>@student.name</td>
+                            <td>@student.surname</td>
+                            <td>@student.birthdate</td>
+                            <td>@student.gender</td>
+                            <td>@student.point</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <!-- Pagination for Students -->
+            <div class="text-center">
+                @if (Model.TotalStudentPages > 1)
+                {
+                    if (Model.StudentPage > 1)
+                    {
+                        <a href="@Url.Action("Index", new { studentPage = 1, bookPage = Model.BookPage })" class="btn btn-primary" aria-label="First Page"><b><<</b></a>
+                        <a href="@Url.Action("Index", new { studentPage = Model.StudentPage - 1, bookPage = Model.BookPage })" class="btn btn-primary" aria-label="Previous"><b><</b></a>
+                    }
+
+                    for (int i = Math.Max(1, Model.StudentPage - 2); i <= Math.Min(Model.StudentPage + 9, Model.TotalStudentPages); i++)
+                    {
+                        if (i == Model.StudentPage)
+                        {
+                            <span class="btn btn-outline-primary">@i</span>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Index", new { studentPage = i, bookPage = Model.BookPage })" class="btn btn-primary">@i</a>
+                        }
+                    }
+
+                    if (Model.StudentPage < Model.TotalStudentPages)
+                    {
+                        <a href="@Url.Action("Index", new { studentPage = Model.StudentPage + 1, bookPage = Model.BookPage })" class="btn btn-primary" aria-label="Next"><b>></b></a>
+                        <a href="@Url.Action("Index", new { studentPage = Model.TotalStudentPages, bookPage = Model.BookPage })" class="btn btn-primary" aria-label="Last Page"><b>>></b></a>
+                    }
+                }
+            </div>
+            </div>
+        </div>
+
+            <br />
+            <br />
+
+            <div class="row">
+                <div class="d-flex justify-content-between">
+                    <div class="text-left">
+                        <h3 class="text-left"  style="font-family:'Curlz MT'">Books</h3>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-outline-success open-create-book-modal">Create</button>
+                    </div>
+                </div>
+
+                <br />
+                <div class="table-responsive">
+                    <table class="table table-bordered book-table" style="background-color: #ececec; padding: 20px; border-radius: 5px; text-align: center">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Page Count</th>
+                                <th>Point</th>
+                                <th>Author</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var book in Model.Books)
+                            {
+                                <tr>
+                                    <td>@book.name</td>
+                                    <td>@book.pagecount</td>
+                                    <td>@book.point</td>
+                                    <td>@book.author.name @book.author.surname</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+
+                <!-- Pagination for Books -->
+                <div class="text-center">
+                    @if (Model.TotalBookPages > 1)
+                    {
+                        if (Model.BookPage > 1)
+                        {
+                            <a href="@Url.Action("Index", new { studentPage = Model.StudentPage, bookPage = 1 })" class="btn btn-primary" aria-label="First Page"><b><<</b></a>
+                            <a href="@Url.Action("Index", new { studentPage = Model.StudentPage, bookPage = Model.BookPage - 1 })" class="btn btn-primary" aria-label="Previous"><b><</b></a>
+                        }
+
+                        for (int i = Math.Max(1, Model.BookPage - 2); i <= Math.Min(Model.BookPage + 4, Model.TotalBookPages); i++)
+                        {
+                            if (i == Model.BookPage)
+                            {
+                                <span class="btn btn-outline-primary">@i</span>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Index", new { studentPage = Model.StudentPage, bookPage = i })" class="btn btn-primary">@i</a>
+                            }
+                        }
+
+                        if (Model.BookPage < Model.TotalBookPages)
+                        {
+                            <a href="@Url.Action("Index", new { studentPage = Model.StudentPage, bookPage = Model.BookPage + 1 })" class="btn btn-primary" aria-label="Next"><b>></b></a>
+                            <a href="@Url.Action("Index", new { studentPage = Model.StudentPage, bookPage = Model.TotalBookPages })" class="btn btn-primary" aria-label="Last Page"><b>>></b></a>
+                        }
+                    }
+                </div>
+
+
+
+
+
+                <script>
+                    $(document).ready(function () {
+                        $(".open-create-student-modal").click(function () {
+                            $("#createStudentModal").modal("show");
+                        });
+
+                        $("#createStudentButton").click(function () {
+                            var name = $("#name").val();
+                            var surname = $("#surname").val();
+                            var birthdate = $("#birthdate").val();
+                            var gender = $("#gender").val();
+                            var point = $("#point").val();
+
+                            var newRow = $("<tr></tr>");
+                            newRow.append("<td>" + name + "</td>");
+                            newRow.append("<td>" + surname + "</td>");
+                            newRow.append("<td>" + birthdate + "</td>");
+                            newRow.append("<td>" + gender + "</td>");
+                            newRow.append("<td>" + point + "</td>");
+
+                            $("table.student-table  > tbody").append(newRow);
+
+                            $("#name").val("");
+                            $("#surname").val("");
+                            $("#birthdate").val("");
+                            $("#gender").val("");
+                            $("#point").val("");
+
+                            $("#createStudentModal").modal("hide");
+                        });
+
+
+                        $(".open-create-book-modal").click(function () {
+                            $("#createBookModal").modal("show");
+                        });
+
+                        $("#createBookButton").click(function () {
+                            var title = $("#title").val();
+                            var pagecount = $("#pagecount").val();
+                            var point = $("#point").val();
+                            var author = $("#author").val();
+
+                            var newRow = $("<tr></tr>");
+                            newRow.append("<td>" + title + "</td>");
+                            newRow.append("<td>" + pagecount + "</td>");
+                            newRow.append("<td>" + point + "</td>");
+                            newRow.append("<td>" + author + "</td>");
+
+                            $("table.book-table > tbody").append(newRow);
+
+                            $("#title").val("");
+                            $("#pagecount").val("");
+                            $("#point").val("");
+                            $("#author").val("");
+
+                            $("#createBookModal").modal("hide");
+                        });
+                    });
+                </script>
+
